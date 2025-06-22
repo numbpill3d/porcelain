@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Porcelain Shrine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes whisperGlow {
+            0%, 100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); }
+        }
+
+        @keyframes cracklePattern {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(45deg, #f8f0e8, #e8ddd4, #f5f1ea);
+            background-size: 400% 400%;
+            animation: cracklePattern 20s linear infinite;
+            color: #4a3d35;
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 80% 70%, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px, 30px 30px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .shrine-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 240, 232, 0.8));
+            border: 2px solid #d4c4b0;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: gentleFloat 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .shrine-title {
+            font-size: 3em;
+            color: #6b5b4f;
+            margin-bottom: 10px;
+            animation: whisperGlow 4s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        .shrine-subtitle {
+            font-size: 1.2em;
+            color: #8b7b6f;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid #d4c4b0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tab-button {
+            background: linear-gradient(135deg, #f8f0e8, #e8ddd4);
+            border: 1px solid #c4b4a0;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-size: 0.9em;
+            color: #6b5b4f;
+        }
+
+        .tab-button:hover {
+            background: linear-gradient(135deg, #fff, #f0e8d8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #e8ddd4, #d4c4b0);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .left-sidebar {
+            flex: 0 0 300px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #d4c4b0;
+            border-radius: 15px;
+            padding: 20px;
+            height: fit-content;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-title {
+            font-size: 1.3em;
+            color: #6b5b4f;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #d4c4b0;
+            padding-bottom: 5px;
+        }
+
+        .sidebar-list {
+            list-style: none;
+        }
+
+        .sidebar-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(212, 196, 176, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sidebar-list li:hover {
+            background: rgba(248, 240, 232, 0.5);
+            padding-left: 10px;
+            border-radius: 5px;
+        }
+
+        .sidebar-list li::before {
+            content: '→ ';
+            color: #8b7b6f;
+            margin-right: 8px;
+        }
+
+        .content-area {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #d4c4b0;
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeInOut 1s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .content-columns {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .column {
+            flex: 1;
+        }
+
+        .love-letter, .threat-note {
+            background: rgba(248, 240, 232, 0.7);
+            border: 1px solid #d4c4b0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .love-letter:hover, .threat-note:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .love-letter {
+            border-left: 4px solid #d4a574;
+        }
+
+        .threat-note {
+            border-left: 4px solid #8b6b47;
+            background: rgba(235, 225, 215, 0.7);
+        }
+
+        .letter-header {
+            font-style: italic;
+            color: #8b7b6f;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .scroll-box {
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid #d4c4b0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .scroll-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-box::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .scroll-box::-webkit-scrollbar-thumb {
+            background: #d4c4b0;
+            border-radius: 4px;
+        }
+
+        .scroll-box::-webkit-scrollbar-thumb:hover {
+            background: #c4b4a0;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #f8f0e8, #e8ddd4);
+            border: 2px solid #d4c4b0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b7b6f;
+            font-size: 0.8em;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .collapsible {
+            border: 1px solid #d4c4b0;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .collapsible-header {
+            background: linear-gradient(135deg, #f0e8d8, #e8ddd4);
+            padding: 15px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .collapsible-header:hover {
+            background: linear-gradient(135deg, #fff, #f0e8d8);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .collapsible-content.active {
+            max-height: 500px;
+            padding: 20px;
+        }
+
+        .right-sidebar {
+            flex: 0 0 280px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #d4c4b0;
+            border-radius: 15px;
+            padding: 20px;
+            height: fit-content;
+            backdrop-filter: blur(10px);
+        }
+
+        .shrine-links {
+            margin-bottom: 25px;
+        }
+
+        .shrine-link {
+            display: block;
+            padding: 10px 15px;
+            margin: 8px 0;
+            background: linear-gradient(135deg, #f8f0e8, #e8ddd4);
+            border: 1px solid #d4c4b0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #6b5b4f;
+            transition: all 0.3s ease;
+        }
+
+        .shrine-link:hover {
+            background: linear-gradient(135deg, #fff, #f0e8d8);
+            transform: translateX(5px);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #d4c4b0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .animated-text {
+            animation: whisperGlow 3s ease-in-out infinite;
+        }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #d4c4b0;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(15px);
+        }
+
+        .popup.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #8b7b6f;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .left-sidebar, .right-sidebar {
+                flex: none;
+            }
+            
+            .content-columns {
+                flex-direction: column;
+            }
+            
+            .shrine-title {
+                font-size: 2em;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shrine-container">
+        <header>
+            <h1 class="shrine-title">The Porcelain Shrine</h1>
+            <p class="shrine-subtitle">Where whispered devotions collect like dust on forgotten dreams</p>
+        </header>
+
+        <nav>
+            <div class="nav-tabs">
+                <button class="tab-button active" onclick="showTab('about')">About the Keeper</button>
+                <button class="tab-button" onclick="showTab('letters')">Love Letters</button>
+                <button class="tab-button" onclick="showTab('threats')">Dark Whispers</button>
+                <button class="tab-button" onclick="showTab('gallery')">Collected Fragments</button>
+                <button class="tab-button" onclick="showTab('musings')">Quiet Musings</button>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <aside class="left-sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Shrine Offerings</h3>
+                    <ul class="sidebar-list">
+                        <li onclick="showPopup('dollPopup')">Porcelain Dolls</li>
+                        <li onclick="showPopup('letterPopup')">Handwritten Letters</li>
+                        <li onclick="showPopup('photoPopup')">Faded Photographs</li>
+                        <li onclick="showPopup('trinketPopup')">Forgotten Trinkets</li>
+                        <li onclick="showPopup('bookPopup')">Worn Books</li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Sacred Rituals</h3>
+                    <ul class="sidebar-list">
+                        <li>Morning Incense Burning</li>
+                        <li>Twilight Tea Ceremonies</li>
+                        <li>Midnight Letter Reading</li>
+                        <li>Dawn Doll Arrangement</li>
+                        <li>Evening Light Positioning</li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Whispered Secrets</h3>
+                    <div class="scroll-box">
+                        <p>In the quietest hours, when dust motes dance through amber light, the dolls seem to shift their glazed gazes...</p>
+                        <br>
+                        <p>Each letter tells of love that transcends the boundaries between porcelain and flesh...</p>
+                        <br>
+                        <p>The threats, oh the beautiful threats, speak of passions that would crack the very foundations of this shrine...</p>
+                        <br>
+                        <p>Sometimes, in the corner of my vision, I catch movement where there should be none...</p>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="content-area">
+                <div id="about" class="tab-content active">
+                    <h2 class="animated-text">The Keeper of Porcelain Dreams</h2>
+                    <div class="content-columns">
+                        <div class="column">
+                            <p>In the hushed corridors of memory, where porcelain fragments whisper their secrets to shadows, I have become both curator and captive of this delicate shrine. Like morning mist that clings to forgotten gardens, my existence has settled into the rhythm of tending these beautiful, broken things.</p>
+                            
+                            <div class="collapsible">
+                                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                    ↓ The Beginning of Devotion
+                                </div>
+                                <div class="collapsible-content">
+                                    <p>It began with a single doll, her porcelain face cracked in precisely the way that moonlight fractures on water. She arrived wrapped in letters - some bearing words of adoration so tender they seemed to pulse with their own heartbeat, others carrying threats so beautifully crafted they read like dark poetry.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="collapsible">
+                                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                    ↓ The Growing Collection
+                                </div>
+                                <div class="collapsible-content">
+                                    <p>As seasons turn and shadows lengthen, more dolls have found their way to this shrine. Each brings their own correspondence - love letters that smell of pressed flowers and old perfume, threats written in hands that trembled with either rage or passion, sometimes both.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="column">
+                            <div class="image-gallery">
+                                <div class="gallery-item">Keeper's Portrait</div>
+                                <div class="gallery-item">First Doll</div>
+                                <div class="gallery-item">Letter Collection</div>
+                                <div class="gallery-item">Shrine Layout</div>
+                            </div>
+                            
+                            <p>The professional world knows me as a penetration tester, one who seeks vulnerabilities in digital fortresses, who whispers past electronic sentries in the service of protection. But here, in this sacred space, I am something else entirely - a guardian of fragile beauty, a reader of passionate confessions, a keeper of secrets written in fading ink.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="letters" class="tab-content">
+                    <h2 class="animated-text">Love Letters to Porcelain</h2>
+                    <div class="content-columns">
+                        <div class="column">
+                            <div class="love-letter">
+                                <div class="letter-header">From: Anonymous Admirer | Date: Autumn, 1987</div>
+                                <p>"My dearest porcelain angel, your painted lips speak to me in languages older than words. Each crack in your delicate surface is a pathway to my heart. I trace them with trembling fingers, imagining the stories they could tell of love and loss and the gentle passage of time."</p>
+                            </div>
+
+                            <div class="love-letter">
+                                <div class="letter-header">From: A Devoted Collector | Date: Spring, 1994</div>
+                                <p>"In dreams, you dance with me through rooms filled with golden light. Your glass eyes reflect not emptiness, but depths of understanding that no living soul has ever shown me. To love porcelain is to love perfection frozen in time, beauty that neither ages nor fades."</p>
+                            </div>
+
+                            <div class="love-letter">
+                                <div class="letter-header">From: The Lonely Curator | Date: Winter, 2001</div>
+                                <p>"Each night I arrange your hair with the gentleness of a lover, each morning I dust your form with the reverence of a priest. You are my congregation of one, my silent confessor, my unchanging beloved."</p>
+                            </div>
+                        </div>
+
+                        <div class="column">
+                            <div class="scroll-box">
+                                <h4>Fragments of Adoration</h4>
+                                <p><em>"Your silence is more eloquent than any spoken word..."</em></p>
+                                <p><em>"In your stillness, I find the peace that motion destroys..."</em></p>
+                                <p><em>"Perfect porcelain lips that will never lie, never betray..."</em></p>
+                                <p><em>"You are the muse that painters dream of but never find..."</em></p>
+                                <p><em>"In your painted gaze, I see eternity captured in ceramic..."</em></p>
+                                <p><em>"Love letter to fragility: you are everything I fear to break..."</em></p>
+                            </div>
+
+                            <div class="love-letter">
+                                <div class="letter-header">From: The Midnight Visitor | Date: Present Day</div>
+                                <p>"I leave these words like offerings at your feet. In a world of flesh that bruises and hearts that break, you remain pristine, untouchable, pure. My love for you is the love of moths for flame - dangerous, consuming, and absolutely necessary."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="threats" class="tab-content">
+                    <h2 class="animated-text">Dark Whispers & Beautiful Menace</h2>
+                    <div class="content-columns">
+                        <div class="column">
+                            <div class="threat-note">
+                                <div class="letter-header">From: The Jealous Shadow | Date: Unknown</div>
+                                <p>"I will shatter every piece of porcelain that dares to hold your attention. Watch me reduce your precious collection to dust and glittering fragments. Only then will you understand that some devotions require destruction."</p>
+                            </div>
+
+                            <div class="threat-note">
+                                <div class="letter-header">From: The Obsessed Watcher | Date: Last Tuesday</div>
+                                <p>"Your shrine mocks true passion. I have built an altar of broken dolls, each crack a prayer, each fragment a promise. When your perfect porcelain lies in ruins, you will finally comprehend the beauty of destruction."</p>
+                            </div>
+
+                            <div class="threat-note">
+                                <div class="letter-header">From: The Porcelain Prophet | Date: Every Midnight</div>
+                                <p>"The dolls whisper your name in languages of ceramic stress and thermal expansion. They plot their own destruction, and yours with it. Can you hear the tiny sounds they make as they plan to crack? As they prepare to fall?"</p>
+                            </div>
+                        </div>
+
+                        <div class="column">
+                            <div class="scroll-box">
+                                <h4>Sinister Serenades</h4>
+                                <p><em>"I will steal your silence and replace it with screaming..."</em></p>
+                                <p><em>"Your precious dolls will dance only in nightmares..."</em></p>
+                                <p><em>"Beware the one who loves too much, for we are destruction incarnate..."</em></p>
+                                <p><em>"I count the cracks in your shrine like a rosary of ruin..."</em></p>
+                                <p><em>"The porcelain remembers pain, and I am its memory..."</em></p>
+                                <p><em>"Watch the shadows; we multiply like fractures in glass..."</em></p>
+                            </div>
+
+                            <div class="threat-note">
+                                <div class="letter-header">From: The Broken Heart | Date: Always</div>
+                                <p>"You think your shrine is sanctuary, but it is merely a trap. Each doll you add makes you more vulnerable, more precious, more worthy of the exquisite destruction I have planned. Love and ruin are sisters, and I serve them both."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="gallery" class="tab-content">
+                    <h2 class="animated-text">Collected Fragments</h2>
+                    <div class="image-gallery">
+                        <div class="gallery-item">Victorian Mourning Doll</div>
+                        <div class="gallery-item">Bisque Head Beauty</div>
+                        <div class="gallery-item">Cracked Angel Face</div>
+                        <div class="gallery-item">Tea-Stained Letters</div>
+                        <div class="gallery-item">Pressed Flowers</div>
+                        <div class="gallery-item">Vintage Lace</div>
+                        <div class="gallery-item">Faded Photographs</div>
+                        <div class="gallery-item">Ceramic Shards</div>
+                        <div class="gallery-item">Hand-painted Eyes</div>
+                        <div class="gallery-item">Silk Hair Ribbons</div>
+                        <div class="gallery-item">Miniature Shoes</div>
+                        <div class="gallery-item">Porcelain Hands</div>
+                    </div>
+
+                    <div class="collapsible">
+                        <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                            ↓ Acquisition Stories
+                        </div>
+                        <div class="collapsible-content">
+                            <p>Each piece arrives with its own whispered story. The Victorian mourning doll was found in an abandoned estate, still clutching a lock of hair from a child who died of consumption. The bisque head beauty came wrapped in love letters from the 1920s, each one more desperate than the last. The cracked angel face... ah, she speaks to me in dreams, telling tales of the fire that tried but failed to destroy her completely.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="musings" class="tab-content">
+                    <h2 class="animated-text">Quiet Musings</h2>
+                    <div class="content-columns">
+                        <div class="column">
+                            <p>In the amber hours between day and night, when dust motes perform their eternal dance through shafts of fading light, I find myself contemplating the nature of preservation. These dolls, these letters, these beautiful threats - they are all attempts to capture something eternal in forms that inevitably decay.</p>
+
+                            <p>The love letters yellow with age, their passionate declarations fading like autumn leaves. The threats grow more poetic with time, their menace softened by the gentle patina of years. And the dolls... oh, the dolls understand that beauty and fragility are not opposites but dance partners, each making the other more precious.</p>
+
+                            <div class="scroll-box">
+                                <h4>Daily Observations</h4>
+                                <p><strong>Dawn:</strong> The porcelain faces catch the first light like captured stars...</p>
+                                <p><strong>Noon:</strong> Shadows shift, revealing cracks that were invisible moments before...</p>
+                                <p><strong>Dusk:</strong> The letters seem to rustle though no wind stirs them...</p>
+                                <p><strong>Midnight:</strong> In perfect darkness, I swear I can hear them breathing...</p>
+                            </div>
+                        </div>
+
+                        <div class="column">
+                            <p>My professional life as a penetration tester has taught me that every system has vulnerabilities, every fortress has its weakness. But here, in this shrine, I have learned that vulnerability itself can be a kind of strength. The cracks in porcelain faces become maps of character, the torn edges of old letters frame words made more precious by their fragility.</p>
+
+                            <div class="collapsible">
+                                <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                    ↓ On Digital vs. Physical Preservation
+                                </div>
+                                <div class="collapsible-content">
+                                    <p>In the digital realm, I hunt for weaknesses, probe for entry points, seek to understand systems by finding where they might fail. But digital preservation is an illusion - data can be corrupted, lost, deleted with a keystroke. These physical artifacts, fragile as they are, have survived decades, even centuries. They carry the weight of time in their very substance.</p>
+                                </div>
+                            </div>
+
+                            <p>Perhaps that is why I am drawn to both worlds - the clean, precise vulnerability of code and the complex, beautiful fragility of porcelain and paper. Both teach us that caring for something means understanding how it might break.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="right-sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Shrine Navigation</h3>
+                    <div class="shrine-links">
+                        <a href="#" class="shrine-link">The Letter Archive</a>
+                        <a href="#" class="shrine-link">Doll Genealogy</a>
+                        <a href="#" class="shrine-link">Threat Analysis</a>
+                        <a href="#" class="shrine-link">Restoration Notes</a>
+                        <a href="#" class="shrine-link">Visitor Registry</a>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Recent Acquisitions</h3>
+                    <ul class="sidebar-list">
+                        <li>1890s Bisque Doll Head</li>
+                        <li>Love Letters in French</li>
+                        <li>Anonymous Threat Poem</li>
+                        <li>Porcelain Hand Fragments</li>
+                        <li>Victorian Hair Jewelry</li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Shrine Statistics</h3>
+                    <div class="scroll-box">
+                        <p><strong>Dolls in Collection:</strong> 127</p>
+                        <p><strong>Love Letters:</strong> 1,847</p>
+                        <p><strong>Threatening Notes:</strong> 892</p>
+                        <p><strong>Cracked Pieces:</strong> All</p>
+                        <p><strong>Perfect Pieces:</strong> None</p>
+                        <p><strong>Years of Collecting:</strong> 23</p>
+                        <p><strong>Hours Spent Daily:</strong> 6-8</p>
+                        <p><strong>Dreams Featuring Dolls:</strong> Every night</p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <footer>
+            <p class="animated-text">In the end, we are all collectors of beautiful ruins, curators of our own fragile museums.</p>
+            <p>Contact the Keeper: keeper@porcelainshrine.whisper | Visit by moonlight only</p>
+        </footer>
+    </div>
+
+    <!-- Popups -->
+    <div class="popup-overlay" id="popupOverlay" onclick="closeAllPopups()"></div>
+
+    <div class="popup" id="dollPopup">
+        <button class="close-popup" onclick="closeAllPopups()">×</button>
+        <h3>The Porcelain Dolls</h3>
+        <p>Each doll in the collection has been chosen for its particular beauty in brokenness. Their cracked faces tell stories of love, loss, and the patient work of time. Some came with letters tucked into their clothing, others arrived wrapped in whispered threats. All are treasured equally.</p>
+    </div>
+
+    <div class="popup" id="letterPopup">
+        <button class="close-popup" onclick="closeAllPopups()">×</button>
+        <h3>The Letter Collection</h3>
+        <p>Handwritten confessions of love, each one a map of someone's heart laid bare. They arrive by mysterious means - slipped under doors, left in mailboxes, found tucked between books. The paper yellows, the ink fades, but the passion remains eternal.</p>
+    </div>
+
+    <div class="popup" id="photoPopup">
+        <button class="close-popup" onclick="closeAllPopups()">×</button>
+        <h3>Faded Photographs</h3>
+        <p>Images from another time, faces blurred by age and moisture, scenes half-remembered and wholly cherished. Each photograph is a window into someone's precious moment, now preserved in silver and sepia tones.</p>
+    </div>
+
+    <div class="popup" id="trinketPopup">
+        <button class="close-popup" onclick="closeAllPopups()">×</button>
+        <h3>Forgotten Trinkets</h3>
+        <p>Small objects that once held great meaning - a broken locket, a child's toy, a pressed flower from a wedding bouquet. These trinkets are the punctuation marks in the sentences of human lives.</p>
+    </div>
+
+    <div class="popup" id="bookPopup">
+        <button class="close-popup" onclick="closeAllPopups()">×</button>
+        <h3>Worn Books</h3>
+        <p>Volumes of poetry, forgotten novels, journals filled with secrets. Each book bears the fingerprints of its readers, the weight of their attention, the stains of their tears. Literature becomes sacred when it has been truly loved.</p>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab and mark button as active
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function toggleCollapsible(element) {
+            const content = element.nextElementSibling;
+            const isActive = content.classList.contains('active');
+            
+            // Close all collapsibles
+            document.querySelectorAll('.collapsible-content').forEach(c => c.classList.remove('active'));
+            
+            // Open clicked one if it wasn't active
+            if (!isActive) {
+                content.classList.add('active');
+                element.innerHTML = '↑ ' + element.innerHTML.substring(2);
+            } else {
+                element.innerHTML = '↓ ' + element.innerHTML.substring(2);
+            }
+        }
+
+        function showPopup(popupId) {
+            document.getElementById('popupOverlay').classList.add('active');
+            document.getElementById(popupId).classList.add('active');
+        }
+
+        function closeAllPopups() {
+            document.getElementById('popupOverlay').classList.remove('active');
+            document.querySelectorAll('.popup').forEach(popup => popup.classList.remove('active'));
+        }
+
+        // Add floating animation to gallery items
+        document.querySelectorAll('.gallery-item').forEach((item, index) => {
+            item.style.animationDelay = `${index * 0.2}s`;
+            item.classList.add('gentle-float');
+        });
+
+        // Add gentle hover effects to love letters and threats
+        document.querySelectorAll('.love-letter, .threat-note').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02) rotate(0.5deg)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) rotate(0deg)';
+            });
+        });
+
+        // Gentle text animation for certain elements
+        function addGentleTextAnimation() {
+            const animatedElements = document.querySelectorAll('.animated-text');
+            animatedElements.forEach(element => {
+                element.style.animation = 'whisperGlow 4s ease-in-out infinite';
+            });
+        }
+
+        // Initialize animations when page loads
+        window.addEventListener('load', addGentleTextAnimation);
+
+        // Add subtle parallax effect to background elements
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            document.body.style.backgroundPosition = `0 ${rate}px`;
+        });
+    </script>
+</body>
+</html>
